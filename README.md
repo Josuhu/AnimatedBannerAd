@@ -7,6 +7,8 @@ NOTE! The test setup will not work without your google-service.Json file for Fir
 
 If you wish to simplify the setup then please check the most relevant classes as below. Other enviromental functions support this in larger scale.
 
+class MainActivity & MainViewModel
+
 composables -> MyComposables.kt
 
 ads -> class AdsProvider
