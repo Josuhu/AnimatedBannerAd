@@ -11,6 +11,5 @@ composables -> MyComposables.kt
 
 ads -> class AdsProvider
 
-Youtube walkthrough: https://youtu.be/0ctBmI-gwlw
-
+Youtube walkthrough:
 https://www.youtube.com/watch?v=0ctBmI-gwlw
