@@ -156,14 +156,14 @@ class MainActivity : ComponentActivity() {
     }
 
     override fun onStop() {
-        super.onStop()
         viewModel.nullBannerJobs()
+        super.onStop()
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         viewModel.destroyBannerViews()
         viewModel.nullBannerViews()
+        super.onDestroy()
     }
 
 }
