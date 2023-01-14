@@ -7,13 +7,12 @@ import com.example.banneradmediation.tools.MyLogging
 import com.facebook.ads.AdSettings
 import com.facebook.ads.AudienceNetworkAds
 import com.google.android.gms.ads.MobileAds
-import org.koin.java.KoinJavaComponent.inject
 
 class MyAdManager {
 
     @Suppress("PrivatePropertyName")
     private val TAG = "MyAdManager"
-    private val myLogger by inject<MyLogging>(MyLogging::class.java)
+    private val myLogger = MyLogging()
 
     // Google Ads main initialization
     fun initialiseAdMob(context: Context) {

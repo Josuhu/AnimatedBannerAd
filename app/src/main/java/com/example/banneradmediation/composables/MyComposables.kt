@@ -33,11 +33,10 @@ import com.google.android.gms.ads.AdView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import org.koin.java.KoinJavaComponent.inject
 
 
 private const val TAG = "MyComposables"
-private val myLogger by inject<MyLogging>(MyLogging::class.java)
+private val myLogger = MyLogging()
 
 private val dotSize = 10.dp
 private const val delayUnit = 300
@@ -102,22 +101,24 @@ fun MyBannerAdView(
                     if (selectedView == null) {
                         val adsManager = object : AdsProvider() {
                             override fun _onAdLoaded(height: Dp, bannerKey: String) {
-                                super._onAdLoaded(height, bannerKey)
+                                scope.launch { AdConfig.updateTimeSinceAdLoaded(bannerKey, dataStore) }
                                 targetHeight.value = height
                                 bannerAdLoaded.value = true
                                 bannerJob.value = null
                             }
 
                             override fun _onAdFailedToLoad() {
-                                super._onAdFailedToLoad()
                                 targetHeight.value = defaultBannerHeight
                                 bannerAdLoaded.value = true
                             }
 
                             override fun _onAdOpened() {
-                                super._onAdOpened()
                                 showBannerAd.value = false
                             }
+
+                            override fun _onAdImpression() {}
+                            override fun _onAdClicked() {}
+                            override fun _onAdClosed() {}
                         }
                         viewGroup.value = adsManager.selectAdView(
                             context = context,

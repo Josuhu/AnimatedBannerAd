@@ -5,21 +5,14 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import androidx.activity.ComponentActivity
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.material.TextButton
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import com.example.banneradmediation.ads.MyAdManager
 import com.example.banneradmediation.application.dataStore
-import com.example.banneradmediation.composables.MyBannerAdView
 import com.example.banneradmediation.firebase.RemoteConfig
 import com.example.banneradmediation.secrets.AdConfig
 import com.example.banneradmediation.tools.MyLogging
@@ -45,6 +38,15 @@ class MainActivity : ComponentActivity() {
     private val myLogger = get<MyLogging>()
 
 
+    /**IMPLEMENT COMPOSE DRIVEN FUNCTIONS IN HERE*/
+    inner class ComposeManager: MainCompose() {
+        override fun navigateTo(intent: Int) {
+            viewModel.showView.value = intent
+        }
+
+    }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         /**FETCH AND ACTIVATE REMOTECONFIG*/
@@ -52,6 +54,18 @@ class MainActivity : ComponentActivity() {
         /**GOOGLE ADS MAIN INITIALISATION*/
         MyAdManager().initialiseAdMob(this)
 
+        /**HANDLE ONBACKPRESSED()*/
+        // Handles the onBackPressed() override function
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (viewModel.showView.value != viewModel.mainView) {
+                    viewModel.showView.value = viewModel.mainView
+                    return
+                }
+                finish()
+            }
+        })
+        val compose = ComposeManager()
         setContent {
             val showFragment = viewModel.showView.value
             BannerAdMediationTheme {
@@ -63,54 +77,19 @@ class MainActivity : ComponentActivity() {
                     when (showFragment) {
                         /**MAIN FRAGMENT*/
                         viewModel.mainView -> {
-                            Column(modifier = Modifier.fillMaxWidth(),
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
-                                MyBannerAdView(
-                                    viewModel = viewModel,
-                                    bannerId = "MainBanner",
-                                    bannerKey = PrefsDataStore.bannerAdLoadedKey,
-                                    dataStore = dataStore,
-                                    viewGroup = viewModel.mainAdViewGroup,
-                                    bannerAdLoaded = viewModel.bannerAdLoaded,
-                                    showBannerAd = viewModel.showBanner,
-                                    bannerJob = viewModel.mainBannerJob
-                                )
-                                TextButton(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(8.dp),
-                                    onClick = { viewModel.showView.value = viewModel.fragment },
-                                ) {
-                                    Text(text = "Main view adapting with banner size")
-                                }
-                            }
+                            compose.MainFragfment(
+                                viewModel = viewModel,
+                                dataStore = dataStore,
+                                onBackPressed = { onBackPressedDispatcher.onBackPressed() }
+                            )
                         }
                         /**SECOND FRAGMENT*/
                         viewModel.fragment -> {
-                            Column(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
-                                MyBannerAdView(
-                                    viewModel = viewModel,
-                                    bannerId = "FragmentBanner",
-                                    bannerKey = PrefsDataStore.fragmentBannerAdLoadedKey,
-                                    dataStore = dataStore,
-                                    viewGroup = viewModel.fragmentAdViewGroup,
-                                    bannerAdLoaded = viewModel.bannerFragmentAdLoaded,
-                                    showBannerAd = viewModel.showFragmentBanner,
-                                    bannerJob = viewModel.fragmentBannerJob
-                                )
-                                TextButton(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(8.dp),
-                                    onClick = { viewModel.showView.value = viewModel.mainView },
-                                ) {
-                                    Text(text = "Fragment view adapting with banner size")
-                                }
-                            }
+                            compose.Fragment(
+                                viewModel = viewModel,
+                                dataStore = dataStore,
+                                onBackPressed = { onBackPressedDispatcher.onBackPressed() }
+                            )
                         }
                     }
 

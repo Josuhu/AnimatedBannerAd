@@ -6,15 +6,13 @@ import androidx.datastore.preferences.core.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
-import org.koin.java.KoinJavaComponent.inject
 import java.io.IOException
 import java.lang.ClassCastException
-
 
 object PrefsDataStore {
 
     private const val TAG = "PREFS DATASTORE"
-    private val myLogger by inject<MyLogging>(MyLogging::class.java)
+    private val myLogger = MyLogging()
 
     const val bannerAdLoadedKey = "BANNER_ADS_LOADED_KEY"
     const val fragmentBannerAdLoadedKey = "FRAGMENT_BANNER_ADS_LOADED_KEY"

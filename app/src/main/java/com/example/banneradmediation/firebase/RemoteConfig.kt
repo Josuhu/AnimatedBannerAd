@@ -8,13 +8,12 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
 import com.example.banneradmediation.secrets.AdConfig
 import com.example.banneradmediation.tools.MyLogging
-import org.koin.java.KoinJavaComponent.inject
 
 
 object RemoteConfig {
 
     private const val TAG = "RemoteConfig"
-    private val myLogger by inject<MyLogging>(MyLogging::class.java)
+    private val myLogger = MyLogging()
 
     // Configurable Keys which are used from Firebase
     const val AD_CONFIG = "AD_CONFIG"

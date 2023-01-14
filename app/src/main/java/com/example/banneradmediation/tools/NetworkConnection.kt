@@ -4,13 +4,11 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.util.Log
-import org.koin.java.KoinJavaComponent.inject
-
 
 object NetworkConnection {
 
     private const val TAG = "NetworkConnection"
-    private val myLogger by inject<MyLogging>(MyLogging::class.java)
+    private val myLogger = MyLogging()
 
     fun isOnline(context: Context): Boolean {
         val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager

@@ -1,14 +1,11 @@
 package com.example.banneradmediation.ads
 
 import android.annotation.SuppressLint
-import android.app.Application
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.ViewGroup
-import androidx.compose.ui.unit.Dp
-import com.example.banneradmediation.application.dataStore
 import com.example.banneradmediation.secrets.AdConfig
 import com.example.banneradmediation.tools.ComposeUtils
 import com.example.banneradmediation.tools.MyLogging
@@ -17,14 +14,10 @@ import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.LoadAdError
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import org.koin.java.KoinJavaComponent.inject
 
 
 @Suppress("FunctionName", "PrivatePropertyName")
-open class AdsProvider: Application() {
+abstract class AdsProvider: AdsProviderInterface {
 
     @Suppress("unused")
     private val TAG = "AdsProvider"
@@ -32,19 +25,7 @@ open class AdsProvider: Application() {
     private val adMobTAG = "AdsProvider ADMOB"
     private val metaTAG = "AdsProvider META"
     // private val unityTAG = "AdsProvider UNITY"
-
-    private val myLogger by inject<MyLogging>(MyLogging::class.java)
-    private val scopeIO = CoroutineScope(Dispatchers.IO)
-
-    /**Override these functions within application to get responses from the selected Ad*/
-    open fun _onAdLoaded(height: Dp, bannerKey: String) { scopeIO.launch { AdConfig.updateTimeSinceAdLoaded(bannerKey, dataStore) } }
-    open fun _onAdImpression() {}
-    open fun _onAdFailedToLoad() {}
-    open fun _onAdOpened() {}
-    open fun _onAdClicked() {}
-    open fun _onAdClosed() {}
-    @Suppress("unused")
-    open fun _onAdLeftApplication() {}
+    private val myLogger = MyLogging()
 
     fun selectAdView(
         context: Context,
